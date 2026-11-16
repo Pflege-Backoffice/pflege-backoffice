@@ -51,7 +51,7 @@ auf den Eintrag im `entscheidungsprotokoll.md` abhaken, nicht löschen.
 
 ## OP-004: CODEOWNERS und Branch-Schutz aktivieren
 
-- GitHub-Konten bzw. Teams in `.github/CODEOWNERS` eintragen (derzeit auskommentiert).
+- GitHub-Konten bzw. Teams in `.github/CODEOWNERS` eintragen (Team 1: @Johannes-01 eingetragen; Team 2, Team 3 und Integrationskreis noch auskommentiert).
 - In GitHub: Branch-Schutz für `main` (Pull Request + grüner Build + 1 Review).
 
 ## OP-005: Technische Einschränkungen des Hello-Beispiels

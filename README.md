@@ -76,7 +76,7 @@ richtige Version automatisch. Optional: [Postman](https://www.postman.com/downlo
 
 ```bash
 # 1. Repository holen
-git clone <REPOSITORY-URL> pflege-backoffice
+git clone https://github.com/Pflege-Backoffice/pflege-backoffice.git
 cd pflege-backoffice
 
 # 2. Lokale Zugangsdaten anlegen (Datei .env wird nie eingecheckt)

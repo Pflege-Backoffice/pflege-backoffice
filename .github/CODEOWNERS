@@ -12,8 +12,8 @@
 # Standard: Integrationskreis (je eine Person pro Team)
 # *                     @ORGANISATION/integrationskreis
 
-# Team-Module
-# /team1-verwaltung/    @ORGANISATION/team-1
+# Team-Module (weitere Mitglieder mit Leerzeichen anhaengen, z. B. @Johannes-01 @konto2)
+/team1-verwaltung/      @Johannes-01
 # /team2-material/      @ORGANISATION/team-2
 # /team3-abwesenheit/   @ORGANISATION/team-3
 
