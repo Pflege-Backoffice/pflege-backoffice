@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+-->
+<!-- KI-GENERIERT START (Claude Code, Anthropic) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.thi.pflegebackoffice</groupId>
+        <artifactId>pflege-backoffice-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>cep-esper</artifactId>
+    <name>Pflege-Backoffice :: CEP (Esper)</name>
+    <description>
+        Kapselt die Esper-Engine (Event Stream Processing). ACHTUNG Lizenz: Esper steht unter GPL v2,
+        siehe docs/offene-punkte.md. Nur dieses Modul darf Esper-Klassen (com.espertech) verwenden.
+    </description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.espertech</groupId>
+            <artifactId>esper-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.espertech</groupId>
+            <artifactId>esper-compiler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.espertech</groupId>
+            <artifactId>esper-runtime</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+<!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

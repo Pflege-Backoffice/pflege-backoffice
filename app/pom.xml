@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+-->
+<!-- KI-GENERIERT START (Claude Code, Anthropic) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.thi.pflegebackoffice</groupId>
+        <artifactId>pflege-backoffice-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>app</artifactId>
+    <name>Pflege-Backoffice :: App (Quarkus-Anwendung)</name>
+    <description>Die EINE lauffaehige Quarkus-Anwendung; fasst alle Module zusammen und enthaelt die Konfiguration.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.thi.pflegebackoffice</groupId>
+            <artifactId>hello-process</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.thi.pflegebackoffice</groupId>
+            <artifactId>team1-verwaltung</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.thi.pflegebackoffice</groupId>
+            <artifactId>team2-material</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.thi.pflegebackoffice</groupId>
+            <artifactId>team3-abwesenheit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-mysql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>generate-code</goal>
+                            <goal>generate-code-tests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+<!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

@@ -1,0 +1,24 @@
+# Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+# Verantwortlich: <NAME>
+# Hauptautor: KI-generiert (Claude Code, Anthropic)
+# KI-GENERIERT START (Claude Code, Anthropic)
+
+# Standard: Textdateien mit LF im Repository und im Arbeitsverzeichnis (macOS, Linux, Windows)
+* text=auto eol=lf
+
+# Windows-Skripte brauchen CRLF (z. B. mvnw.cmd)
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Unix-Skript ./mvnw muss LF behalten
+mvnw text eol=lf
+
+# Binaerdateien nie umwandeln
+*.jar binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+
+# KI-GENERIERT ENDE (Claude Code, Anthropic)

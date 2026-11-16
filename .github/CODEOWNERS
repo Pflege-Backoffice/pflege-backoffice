@@ -1,0 +1,26 @@
+# Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+# Verantwortlich: <NAME>
+# Hauptautor: KI-generiert (Claude Code, Anthropic)
+# KI-GENERIERT START (Claude Code, Anthropic)
+#
+# Wer muss Pull Requests fuer welche Ordner freigeben?
+# AKTIVIEREN: "#" am Zeilenanfang entfernen und Platzhalter ersetzen durch
+#   - GitHub-Teams einer Organisation:  @ORGANISATION/team-1
+#   - oder einzelne Konten:             @konto1 @konto2
+# Die letzte passende Zeile gewinnt.
+
+# Standard: Integrationskreis (je eine Person pro Team)
+# *                     @ORGANISATION/integrationskreis
+
+# Team-Module
+# /team1-verwaltung/    @ORGANISATION/team-1
+# /team2-material/      @ORGANISATION/team-2
+# /team3-abwesenheit/   @ORGANISATION/team-3
+
+# Gemeinsame Teile: Aenderungen betreffen alle Teams -> Integrationskreis
+# /shared/              @ORGANISATION/integrationskreis
+# /app/                 @ORGANISATION/integrationskreis
+# /pom.xml              @ORGANISATION/integrationskreis
+# /docs/                @ORGANISATION/integrationskreis
+
+# KI-GENERIERT ENDE (Claude Code, Anthropic)

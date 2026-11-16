@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+-->
+<!-- KI-GENERIERT START (Claude Code, Anthropic) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.thi.pflegebackoffice</groupId>
+        <artifactId>pflege-backoffice-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>hello-process</artifactId>
+    <name>Pflege-Backoffice :: Hello-Prozess (Beispiel)</name>
+    <description>Minimaler Beispielprozess: BPMN + JMS + Camel + REST + Panache + Esper</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.thi.pflegebackoffice</groupId>
+            <artifactId>shared</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.thi.pflegebackoffice</groupId>
+            <artifactId>cep-esper</artifactId>
+        </dependency>
+
+        <!-- BPMN-Engine -->
+        <dependency>
+            <groupId>org.cibseven.bpm.quarkus</groupId>
+            <artifactId>cibseven-bpm-quarkus-engine</artifactId>
+        </dependency>
+
+        <!-- Camel: JMS (ActiveMQ Classic), Dateisystem, Bean-Aufrufe -->
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-activemq</artifactId>
+        </dependency>
+        <!-- Verbindungs-Pool fuer JMS; von der Camel-ActiveMQ-Komponente standardmaessig genutzt.
+             Version kommt aus quarkus-camel-bom. -->
+        <dependency>
+            <groupId>io.quarkiverse.messaginghub</groupId>
+            <artifactId>quarkus-pooled-jms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-file</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-bean</artifactId>
+        </dependency>
+
+        <!-- Persistenz und REST -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+<!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

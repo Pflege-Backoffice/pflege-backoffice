@@ -1,0 +1,15 @@
+// Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+// Verantwortlich: <NAME>
+// Hauptautor: KI-generiert (Claude Code, Anthropic)
+// KI-GENERIERT START (Claude Code, Anthropic)
+{
+  "recommendations": [
+    "vscjava.vscode-java-pack",
+    "redhat.vscode-quarkus",
+    "redhat.apache-camel-extension-pack",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "ms-azuretools.vscode-docker"
+  ]
+}
+// KI-GENERIERT ENDE (Claude Code, Anthropic)

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+-->
+<!-- KI-GENERIERT START (Claude Code, Anthropic) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>de.thi.pflegebackoffice</groupId>
+        <artifactId>pflege-backoffice-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>team3-abwesenheit</artifactId>
+    <name>Pflege-Backoffice :: Team 3 – Geplante Abwesenheit</name>
+    <description>Ersatzpflege; externe Ansprechpartner, Kontakt, Fristen und Wiedervorlagen</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.thi.pflegebackoffice</groupId>
+            <artifactId>shared</artifactId>
+        </dependency>
+        <!-- Weitere Abhaengigkeiten nach Bedarf, z. B. wie in hello-process/pom.xml:
+             cibseven-bpm-quarkus-engine, camel-quarkus-activemq, quarkus-hibernate-orm-panache -->
+    </dependencies>
+</project>
+<!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

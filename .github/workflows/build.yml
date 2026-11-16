@@ -1,0 +1,72 @@
+# Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+# Verantwortlich: <NAME>
+# Hauptautor: KI-generiert (Claude Code, Anthropic)
+# KI-GENERIERT START (Claude Code, Anthropic)
+#
+# Baut alle Module und fuehrt alle Tests aus (./mvnw verify) – bei jedem Push und Pull Request.
+# MySQL und ActiveMQ laufen als Service-Container mit denselben Werten wie .env.example.
+
+name: Build und Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root-dev
+          MYSQL_DATABASE: pflege_backoffice
+          MYSQL_USER: pflege
+          MYSQL_PASSWORD: pflege-dev
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h localhost -uroot -proot-dev"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+      activemq:
+        image: apache/activemq-classic:6.2.0
+        env:
+          ACTIVEMQ_CONNECTION_USER: pflege
+          ACTIVEMQ_CONNECTION_PASSWORD: pflege-dev
+        ports:
+          - 61616:61616
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: JDK 17 einrichten
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Auf ActiveMQ warten
+        run: |
+          for i in $(seq 1 60); do
+            (echo > /dev/tcp/localhost/61616) 2>/dev/null && exit 0
+            sleep 2
+          done
+          echo "ActiveMQ nicht erreichbar" && exit 1
+
+      - name: Bauen und testen
+        run: ./mvnw -B verify
+
+      - name: Testberichte bei Fehler hochladen
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: '**/target/surefire-reports/'
+
+# KI-GENERIERT ENDE (Claude Code, Anthropic)

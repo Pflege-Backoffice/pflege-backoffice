@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+  KI-GENERIERT START (Claude Code, Anthropic)
+  Minimaler Beispielprozess ohne Fachlogik. Bearbeitbar mit dem Camunda Modeler (Camunda-7-Modus).
+-->
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  id="Definitions_hello"
+                  targetNamespace="http://thi.de/pflege-backoffice/hello">
+
+  <bpmn:message id="Message_BackendAntwort" name="HelloBackendAntwort"/>
+  <bpmn:message id="Message_KeineAntwort" name="HelloKeineAntwort"/>
+
+  <bpmn:process id="hello-process" name="Hello-Prozess" isExecutable="true" camunda:historyTimeToLive="P30D">
+
+    <bpmn:startEvent id="Start" name="Hello-Vorgang gestartet">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <!-- (1) Sendeaufgabe: Nachricht asynchron auf die JMS-Queue hello.anfrage legen -->
+    <bpmn:sendTask id="AnfrageSenden" name="Anfrage an Backend senden"
+                   camunda:delegateExpression="${anfrageSendenDelegate}">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:sendTask>
+
+    <!-- Ereignisbasiertes Gateway: wer zuerst kommt - Antwort oder Esper-Meldung "keine Antwort" -->
+    <bpmn:eventBasedGateway id="AufAntwortWarten" name="Auf Antwort warten">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+
+    <!-- (4) Nachrichten-Zwischenereignis: Korrelation ueber Business Key (= Vorgangskennung) -->
+    <bpmn:intermediateCatchEvent id="BackendAntwortErhalten" name="Backend-Antwort erhalten">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_BackendAntwort"/>
+    </bpmn:intermediateCatchEvent>
+
+    <!-- (7) Rueckkopplung von Esper: keine Antwort im Zeitfenster -->
+    <bpmn:intermediateCatchEvent id="KeineAntwortErkannt" name="Keine Antwort (Esper)">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_KeineAntwort"/>
+    </bpmn:intermediateCatchEvent>
+
+    <!-- (6) Status in MySQL fortschreiben -->
+    <bpmn:serviceTask id="VorgangAbschliessen" name="Vorgang abschliessen"
+                      camunda:delegateExpression="${vorgangAbschliessenDelegate}">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:serviceTask id="KeineAntwortVermerken" name="Keine Antwort vermerken"
+                      camunda:delegateExpression="${keineAntwortVermerkenDelegate}">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:serviceTask>
+
+    <bpmn:endEvent id="EndeAbgeschlossen" name="Abgeschlossen">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndeKeineAntwort" name="Ohne Antwort beendet">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start" targetRef="AnfrageSenden"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="AnfrageSenden" targetRef="AufAntwortWarten"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="AufAntwortWarten" targetRef="BackendAntwortErhalten"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="AufAntwortWarten" targetRef="KeineAntwortErkannt"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="BackendAntwortErhalten" targetRef="VorgangAbschliessen"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="KeineAntwortErkannt" targetRef="KeineAntwortVermerken"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="VorgangAbschliessen" targetRef="EndeAbgeschlossen"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="KeineAntwortVermerken" targetRef="EndeKeineAntwort"/>
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="Diagram_hello">
+    <bpmndi:BPMNPlane id="Plane_hello" bpmnElement="hello-process">
+      <bpmndi:BPMNShape id="Start_di" bpmnElement="Start">
+        <dc:Bounds x="152" y="182" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AnfrageSenden_di" bpmnElement="AnfrageSenden">
+        <dc:Bounds x="240" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AufAntwortWarten_di" bpmnElement="AufAntwortWarten">
+        <dc:Bounds x="395" y="175" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BackendAntwortErhalten_di" bpmnElement="BackendAntwortErhalten">
+        <dc:Bounds x="502" y="102" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="KeineAntwortErkannt_di" bpmnElement="KeineAntwortErkannt">
+        <dc:Bounds x="502" y="262" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="VorgangAbschliessen_di" bpmnElement="VorgangAbschliessen">
+        <dc:Bounds x="600" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="KeineAntwortVermerken_di" bpmnElement="KeineAntwortVermerken">
+        <dc:Bounds x="600" y="240" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndeAbgeschlossen_di" bpmnElement="EndeAbgeschlossen">
+        <dc:Bounds x="762" y="102" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndeKeineAntwort_di" bpmnElement="EndeKeineAntwort">
+        <dc:Bounds x="762" y="262" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="188" y="200"/><di:waypoint x="240" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="340" y="200"/><di:waypoint x="395" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="420" y="175"/><di:waypoint x="420" y="120"/><di:waypoint x="502" y="120"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="420" y="225"/><di:waypoint x="420" y="280"/><di:waypoint x="502" y="280"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="538" y="120"/><di:waypoint x="600" y="120"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="538" y="280"/><di:waypoint x="600" y="280"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="700" y="120"/><di:waypoint x="762" y="120"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="700" y="280"/><di:waypoint x="762" y="280"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+<!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

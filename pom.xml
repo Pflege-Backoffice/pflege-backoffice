@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+-->
+<!-- KI-GENERIERT START (Claude Code, Anthropic) -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.thi.pflegebackoffice</groupId>
+    <artifactId>pflege-backoffice-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Pflege-Backoffice MVP</name>
+    <description>Gemeinsames Repository der drei Teams (Digital Process Engineering, THI)</description>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/license/mit</url>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>shared</module>
+        <module>cep-esper</module>
+        <module>hello-process</module>
+        <module>team1-verwaltung</module>
+        <module>team2-material</module>
+        <module>team3-abwesenheit</module>
+        <module>app</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Versionspaar laut CIB-seven-Kompatibilitaetstabelle: CIB seven 2.2.x <-> Quarkus 3.27.x -->
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+        <quarkus.platform.version>3.27.6</quarkus.platform.version>
+        <cibseven.version>2.2.0</cibseven.version>
+        <esper.version>9.0.0</esper.version>
+
+        <compiler-plugin.version>3.14.0</compiler-plugin.version>
+        <surefire-plugin.version>3.5.3</surefire-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Quarkus-Plattform: legt alle Quarkus-Versionen fest -->
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Camel Quarkus, passend zur gleichen Plattform-Version -->
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-camel-bom</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.cibseven.bpm.quarkus</groupId>
+                <artifactId>cibseven-bpm-quarkus-engine</artifactId>
+                <version>${cibseven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.espertech</groupId>
+                <artifactId>esper-common</artifactId>
+                <version>${esper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.espertech</groupId>
+                <artifactId>esper-compiler</artifactId>
+                <version>${esper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.espertech</groupId>
+                <artifactId>esper-runtime</artifactId>
+                <version>${esper.version}</version>
+            </dependency>
+
+            <!-- Eigene Module -->
+            <dependency>
+                <groupId>de.thi.pflegebackoffice</groupId>
+                <artifactId>shared</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.thi.pflegebackoffice</groupId>
+                <artifactId>cep-esper</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.thi.pflegebackoffice</groupId>
+                <artifactId>hello-process</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.thi.pflegebackoffice</groupId>
+                <artifactId>team1-verwaltung</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.thi.pflegebackoffice</groupId>
+                <artifactId>team2-material</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.thi.pflegebackoffice</groupId>
+                <artifactId>team3-abwesenheit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>${quarkus.platform.group-id}</groupId>
+                    <artifactId>quarkus-maven-plugin</artifactId>
+                    <version>${quarkus.platform.version}</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${compiler-plugin.version}</version>
+                    <configuration>
+                        <parameters>true</parameters>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${surefire-plugin.version}</version>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                            <maven.home>${maven.home}</maven.home>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
+<!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

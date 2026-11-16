@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+
+  KI-GENERIERT START (Claude Code, Anthropic)
+  Diese (leere) Datei sorgt dafuer, dass Quarkus die Klassen dieses Moduls indiziert
+  (CDI-Beans, REST-Ressourcen, Camel-Routen, Entities). Nicht loeschen.
+  KI-GENERIERT ENDE (Claude Code, Anthropic)
+-->
+<beans xmlns="https://jakarta.ee/xml/ns/jakartaee" version="4.0" bean-discovery-mode="annotated"/>

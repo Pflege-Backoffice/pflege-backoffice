@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+  Verantwortlich: <NAME>
+  Hauptautor: KI-generiert (Claude Code, Anthropic)
+  KI-GENERIERT START (Claude Code, Anthropic)
+
+  Synthetische Beispiel-Antwort des simulierten Backends (keine echten Daten).
+  Verwendung: vorgangskennung anpassen und die Datei nach app/target/hello/backend-eingang/ kopieren.
+  Camel wandelt sie in JSON um und legt sie auf die Queue hello.antwort.
+-->
+<umschlag>
+  <vorgangskennung>V-DEMO-0001</vorgangskennung>
+  <pflegehaushaltskennung>H-DEMO-0001</pflegehaushaltskennung>
+  <zeitstempel>2026-01-01T10:00:00Z</zeitstempel>
+  <absender>backend-simulator</absender>
+  <nutzdaten>
+    <text>Hallo Prozess, Antwort per XML-Datei</text>
+  </nutzdaten>
+</umschlag>
+<!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

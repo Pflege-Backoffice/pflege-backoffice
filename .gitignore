@@ -1,0 +1,53 @@
+# Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+# Verantwortlich: <NAME>
+# Hauptautor: KI-generiert (Claude Code, Anthropic)
+# KI-GENERIERT START (Claude Code, Anthropic)
+
+# ---------- Geheimnisse: NIE einchecken ----------
+.env
+*.env.local
+
+# ---------- Maven / Java ----------
+target/
+*.class
+*.log
+hs_err_pid*
+replay_pid*
+.mvn/wrapper/maven-wrapper.jar
+.flattened-pom.xml
+dependency-reduced-pom.xml
+
+# ---------- Quarkus ----------
+.quarkus/
+quarkus.log*
+
+# ---------- IDEs: Maven ist die einzige Wahrheit, keine Projektdateien einchecken ----------
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+# Eclipse
+.project
+.classpath
+.settings/
+.factorypath
+.metadata/
+bin/
+# VS Code: alles ausser der Empfehlungsliste der Erweiterungen
+.vscode/*
+!.vscode/extensions.json
+# NetBeans
+nbproject/
+nbactions.xml
+
+# ---------- Betriebssysteme ----------
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# KI-GENERIERT ENDE (Claude Code, Anthropic)

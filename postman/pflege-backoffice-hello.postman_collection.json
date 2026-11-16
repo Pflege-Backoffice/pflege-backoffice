@@ -1,0 +1,104 @@
+{
+  "info": {
+    "name": "Pflege-Backoffice MVP – Hello-Prozess",
+    "description": "Pflege-Backoffice MVP – SPDX-License-Identifier: MIT\nVerantwortlich: <NAME>\nHauptautor: KI-generiert (Claude Code, Anthropic)\nKI-GENERIERT START/ENDE (Claude Code, Anthropic): gesamte Datei (JSON erlaubt keine Kommentare).\n\nKompletter Durchlauf des Hello-Prozesses. Reihenfolge: 1 -> 2 -> 3 -> 4. Umgebung 'Pflege-Backoffice lokal' auswaehlen. Request 1 erzeugt automatisch eine neue Vorgangskennung. Nur synthetische Testdaten.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 – Hello-Prozess starten",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// neue, eindeutige Vorgangskennung fuer jeden Durchlauf",
+              "pm.environment.set('vorgangskennung', 'V-POSTMAN-' + Date.now());",
+              "pm.environment.set('zeitstempel', new Date().toISOString());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('wartet auf Antwort', () => pm.expect(pm.response.json().status).to.eql('WARTET_AUF_ANTWORT'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/hello/vorgaenge",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vorgangskennung\": \"{{vorgangskennung}}\",\n  \"pflegehaushaltskennung\": \"{{pflegehaushaltskennung}}\",\n  \"zeitstempel\": \"{{zeitstempel}}\",\n  \"absender\": \"postman\",\n  \"nutzdaten\": {\n    \"text\": \"Hallo Backend\",\n    \"kanal\": \"DATEI\"\n  }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "kanal = DATEI: Camel legt die Anfrage als XML-Datei in app/target/hello/ausgang/ ab.\nkanal = DATENBANK: Camel speichert sie in der Tabelle hello_ausgangsnachricht."
+      }
+    },
+    {
+      "name": "2 – Status abfragen (wartet)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/hello/vorgaenge/{{vorgangskennung}}",
+        "description": "Erwartet: status WARTET_AUF_ANTWORT, aktiveSchritte [AufAntwortWarten]."
+      }
+    },
+    {
+      "name": "3 – Backend-Antwort simulieren",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('202 Accepted', () => pm.response.to.have.status(202));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/v1/hello/backend-antworten",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"vorgangskennung\": \"{{vorgangskennung}}\",\n  \"pflegehaushaltskennung\": \"{{pflegehaushaltskennung}}\",\n  \"zeitstempel\": \"{{zeitstempel}}\",\n  \"absender\": \"backend-simulator\",\n  \"nutzdaten\": {\n    \"text\": \"Hallo Prozess\"\n  }\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "description": "Legt die Antwort auf die JMS-Queue hello.antwort. Camel korreliert sie ueber die Vorgangskennung (Business Key) mit dem wartenden Prozess. Muss innerhalb des Esper-Zeitfensters (Standard 120 s) gesendet werden."
+      }
+    },
+    {
+      "name": "4 – Status abfragen (abgeschlossen)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('abgeschlossen', () => pm.expect(pm.response.json().status).to.eql('ABGESCHLOSSEN'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/hello/vorgaenge/{{vorgangskennung}}",
+        "description": "Erwartet: status ABGESCHLOSSEN, antwort 'Hallo Prozess', prozessAktiv false. Ohne Schritt 3 meldet Esper nach dem Zeitfenster status KEINE_ANTWORT."
+      }
+    },
+    {
+      "name": "Fehlerbeispiel – unbekannter Vorgang (RFC 9457)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/hello/vorgaenge/GIBT-ES-NICHT",
+        "description": "Zeigt das einheitliche Fehlerformat application/problem+json mit fehlerId."
+      }
+    }
+  ]
+}

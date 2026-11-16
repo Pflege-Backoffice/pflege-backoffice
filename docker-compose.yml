@@ -1,0 +1,42 @@
+# Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
+# Verantwortlich: <NAME>
+# Hauptautor: KI-generiert (Claude Code, Anthropic)
+#
+# KI-GENERIERT START (Claude Code, Anthropic)
+# Lokale Infrastruktur: MySQL + ActiveMQ Classic. Zugangsdaten aus .env (Vorlage: .env.example).
+# Start: docker compose up -d     Stopp: docker compose down     Alles loeschen: docker compose down -v
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: pflege-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Bitte .env aus .env.example anlegen}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT:-3307}:3306"
+    volumes:
+      - mysql-daten:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  activemq:
+    image: apache/activemq-classic:6.2.0
+    container_name: pflege-activemq
+    environment:
+      ACTIVEMQ_CONNECTION_USER: ${ACTIVEMQ_USER:?Bitte .env aus .env.example anlegen}
+      ACTIVEMQ_CONNECTION_PASSWORD: ${ACTIVEMQ_PASSWORD}
+      ACTIVEMQ_WEB_USER: ${ACTIVEMQ_WEB_USER}
+      ACTIVEMQ_WEB_PASSWORD: ${ACTIVEMQ_WEB_PASSWORD}
+    ports:
+      - "${ACTIVEMQ_PORT:-61616}:61616"    # JMS (OpenWire)
+      - "${ACTIVEMQ_WEB_PORT:-8161}:8161"  # Web-Konsole: http://localhost:8161/admin
+
+volumes:
+  mysql-daten:
+# KI-GENERIERT ENDE (Claude Code, Anthropic)
