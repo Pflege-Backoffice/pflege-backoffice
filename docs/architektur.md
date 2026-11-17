@@ -95,5 +95,8 @@ Eine MySQL-Datenbank `pflege_backoffice` (Entscheidung E-004):
 - **MySQL-Isolationsstufe:** die Engine verlangt `READ_COMMITTED` (in `application.properties` gesetzt).
 - **Prozessmodelle deployen:** je Team eine Klasse wie `HelloProzessDeployment`
   (beobachtet `CamundaEngineStartupEvent`).
+- **Weboberfläche (Cockpit, Tasklist, Admin):** optionaler Container `cibseven-ui`
+  (`docker compose --profile ui up -d`, <http://localhost:8090>), liest dieselbe Datenbank und führt
+  selbst keine Jobs aus (Entscheidung E-007).
 - **Fehlerbehandlung JMS:** Antworten ohne wartenden Prozess landen in `hello.antwort.fehler`.
 <!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

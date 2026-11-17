@@ -24,6 +24,22 @@ alten ersetzt).
 
 ---
 
+### E-007: CIB-seven-Oberfläche als optionaler Container (CIB seven Run)
+
+- **Datum:** 2026-11-17
+- **Entscheidung:** Cockpit, Tasklist und Admin laufen im Container `cibseven/cibseven:run-2.2.0`
+  (Compose-Profil `ui`, Port 8090) auf derselben MySQL-Datenbank wie die Quarkus-Anwendung. Der
+  Job-Executor dieses Containers ist abgeschaltet; Beispielprozess und KI-Konnektor ebenfalls.
+- **Begründung:** Die Quarkus-Erweiterung von CIB seven enthält keine Webanwendungen. Die Engine
+  speichert ihren gesamten Zustand in der Datenbank, deshalb kann eine zweite Engine-Instanz ihn
+  anzeigen. Ohne abgeschalteten Job-Executor würde der Container Timer und asynchrone Schritte
+  übernehmen, deren Java-Delegates nur in Quarkus existieren → Vorfälle. Lokal getestet: Cockpit
+  zeigt Modell und Instanzen des Hello-Prozesses, Anmeldung `demo`/`demo` funktioniert, Quarkus
+  startet und arbeitet parallel weiter.
+- **Betroffene Teams:** alle (nur lokale Entwicklung; CI startet den Container nicht)
+- **Offene Folgen:** Image-Version bei jedem CIB-seven-Upgrade mitziehen (siehe E-001). Beide
+  Engines verwenden `READ_COMMITTED` und History-Level `full`.
+
 ### E-006: BPMN-Service-Tasks nur über Delegate-Beans
 
 - **Datum:** 2026-11-16

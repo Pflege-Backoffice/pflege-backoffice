@@ -104,6 +104,35 @@ Der erste Start lädt alle Abhängigkeiten und dauert einige Minuten. Danach:
 Beenden: `q` im Quarkus-Terminal bzw. `Strg+C`; Container stoppen mit `docker compose down`
 (`docker compose down -v` löscht zusätzlich alle Daten).
 
+### Optional: CIB-seven-Oberfläche (Cockpit, Tasklist, Admin)
+
+Die Engine läuft eingebettet in Quarkus und bringt selbst keine Weboberfläche mit. Zum Ansehen von
+Prozessmodellen, laufenden Instanzen, Variablen, Vorfällen und der Historie gibt es einen
+zusätzlichen Container (CIB seven Run 2.2.0), der **dieselbe MySQL-Datenbank** liest:
+
+```bash
+docker compose --profile ui up -d     # MySQL, ActiveMQ und zusätzlich die Oberfläche
+```
+
+| Was | Adresse |
+|---|---|
+| Cockpit (Instanzen, Variablen, Vorfälle, Historie) | <http://localhost:8090/camunda/app/cockpit/default/> |
+| Tasklist (Benutzeraufgaben bearbeiten) | <http://localhost:8090/camunda/app/tasklist/default/> |
+| Admin (Benutzer, Gruppen, Berechtigungen) | <http://localhost:8090/camunda/app/admin/default/> |
+
+Anmeldung: `demo` / `demo` (legt der Container beim ersten Start in der Datenbank an).
+
+Wichtig:
+
+- Der UI-Container hat eine **eigene** Engine-Instanz, die nur anzeigt. Ihr Job-Executor ist
+  abgeschaltet (`CAMUNDA_BPM_JOBEXECUTION_ENABLED=false`), denn Timer und asynchrone Schritte
+  brauchen unsere Java-Delegates, und die gibt es nur in der Quarkus-Anwendung. Ausgeführt wird
+  alles weiterhin von Quarkus – ohne laufendes `./mvnw quarkus:dev` bewegt sich kein Prozess weiter.
+- Aktionen in Cockpit/Tasklist (Variable ändern, Instanz abbrechen, Aufgabe abschließen) schreiben
+  direkt in die gemeinsame Datenbank und wirken sofort auf die Quarkus-Anwendung.
+- Die Version des Images muss zur CIB-seven-Version in `pom.xml` passen (beide 2.2.0).
+- Stoppen: `docker compose --profile ui down` (ohne `--profile ui` bleibt der UI-Container stehen).
+
 ## Hello-Prozess durchspielen
 
 Der Hello-Prozess zeigt alle Pflichtpunkte in einem Durchlauf (Details und Diagramm:
@@ -321,6 +350,7 @@ Einfaches Modell (GitHub Flow):
 | `./mvnw: Permission denied` (macOS/Linux) | `chmod +x mvnw` |
 | `bad interpreter: /bin/sh^M` | Zeilenenden wurden zu CRLF – mit `git config core.autocrlf false` neu auschecken; `.gitattributes` sorgt danach für LF. |
 | Status bleibt `WARTET_AUF_ANTWORT` | Stimmt die `vorgangskennung` der Antwort? Antworten ohne wartenden Prozess landen in der Queue `hello.antwort.fehler` (ActiveMQ-Konsole). |
+| CIB-seven-Oberfläche zeigt Prozess nicht | Die Quarkus-Anwendung muss das Modell einmal deployt haben (`./mvnw quarkus:dev` starten). Cockpit lädt Listen nicht automatisch neu – Seite aktualisieren. |
 | Prozessänderung wird nicht übernommen | Nach Änderungen an `.bpmn`-Dateien Quarkus neu starten (`s` im Dev-Modus-Terminal). |
 
 ## Weitere Dokumentation
