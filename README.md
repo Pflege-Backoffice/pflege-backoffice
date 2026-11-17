@@ -108,7 +108,8 @@ Beenden: `q` im Quarkus-Terminal bzw. `Strg+C`; Container stoppen mit `docker co
 
 Die Engine läuft eingebettet in Quarkus und bringt selbst keine Weboberfläche mit. Zum Ansehen von
 Prozessmodellen, laufenden Instanzen, Variablen, Vorfällen und der Historie gibt es einen
-zusätzlichen Container (CIB seven Run 2.2.0), der **dieselbe MySQL-Datenbank** liest:
+zusätzlichen Container (CIB seven 2.2.0, Tomcat-Distribution), der **dieselbe MySQL-Datenbank**
+liest:
 
 ```bash
 docker compose --profile ui up -d     # MySQL, ActiveMQ und zusätzlich die Oberfläche
@@ -120,17 +121,23 @@ docker compose --profile ui up -d     # MySQL, ActiveMQ und zusätzlich die Ober
 | Tasklist (Benutzeraufgaben bearbeiten) | <http://localhost:8090/camunda/app/tasklist/default/> |
 | Admin (Benutzer, Gruppen, Berechtigungen) | <http://localhost:8090/camunda/app/admin/default/> |
 
-Anmeldung: `demo` / `demo` (legt der Container beim ersten Start in der Datenbank an).
+**Erster Aufruf:** Ist noch kein Benutzer in der Datenbank, zeigt die Oberfläche ein Formular zum
+Anlegen des ersten Administrators. Nur Testdaten eintragen (z. B. `admin` / `admin-dev`,
+E-Mail `admin@example.invalid`). Der Benutzer liegt danach in der gemeinsamen Datenbank.
 
 Wichtig:
 
 - Der UI-Container hat eine **eigene** Engine-Instanz, die nur anzeigt. Ihr Job-Executor ist
-  abgeschaltet (`CAMUNDA_BPM_JOBEXECUTION_ENABLED=false`), denn Timer und asynchrone Schritte
-  brauchen unsere Java-Delegates, und die gibt es nur in der Quarkus-Anwendung. Ausgeführt wird
-  alles weiterhin von Quarkus – ohne laufendes `./mvnw quarkus:dev` bewegt sich kein Prozess weiter.
+  abgeschaltet ([docker/cibseven-ui/start.sh](docker/cibseven-ui/start.sh)), denn Timer und
+  asynchrone Schritte brauchen unsere Java-Delegates, und die gibt es nur in der
+  Quarkus-Anwendung. Ausgeführt wird alles weiterhin von Quarkus – ohne laufendes
+  `./mvnw quarkus:dev` bewegt sich kein Prozess weiter.
 - Aktionen in Cockpit/Tasklist (Variable ändern, Instanz abbrechen, Aufgabe abschließen) schreiben
   direkt in die gemeinsame Datenbank und wirken sofort auf die Quarkus-Anwendung.
-- Die Version des Images muss zur CIB-seven-Version in `pom.xml` passen (beide 2.2.0).
+- Das Image ist fest auf `tomcat-2.2.0` gesetzt (nicht `tomcat-latest`): Die Version muss zur
+  CIB-seven-Version in `pom.xml` passen, sonst passen die Tabellen nicht zusammen.
+- Port 8090 ist nur auf dem eigenen Rechner erreichbar; die REST-API unter `/engine-rest` hat in
+  diesem Image keine Anmeldung.
 - Stoppen: `docker compose --profile ui down` (ohne `--profile ui` bleibt der UI-Container stehen).
 
 ## Hello-Prozess durchspielen

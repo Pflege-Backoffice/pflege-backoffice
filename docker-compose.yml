@@ -38,30 +38,31 @@ services:
       - "${ACTIVEMQ_PORT:-61616}:61616"    # JMS (OpenWire)
       - "${ACTIVEMQ_WEB_PORT:-8161}:8161"  # Web-Konsole: http://localhost:8161/admin
 
-  # Optional (Profil "ui"): CIB seven Run nur als Oberflaeche auf derselben Datenbank.
-  # Unsere Engine laeuft in Quarkus; dieser Container zeigt deren Daten an (Cockpit, Tasklist, Admin).
-  # Er fuehrt KEINE Jobs aus (Timer, asynchrone Fortsetzungen), denn unsere Java-Delegates gibt es
-  # nur in der Quarkus-Anwendung. Oberflaeche: http://localhost:8090  (Anmeldung demo / demo)
+  # Optional (Profil "ui"): CIB seven (Tomcat-Distribution) nur als Oberflaeche auf derselben
+  # Datenbank. Unsere Engine laeuft in Quarkus; dieser Container zeigt deren Daten an (Cockpit,
+  # Tasklist, Admin). Er fuehrt KEINE Jobs aus (Timer, asynchrone Fortsetzungen), denn unsere
+  # Java-Delegates gibt es nur in der Quarkus-Anwendung (siehe docker/cibseven-ui/start.sh).
+  # Oberflaeche: http://localhost:8090/camunda/app/  (beim ersten Aufruf Admin-Benutzer anlegen)
   cibseven-ui:
-    image: cibseven/cibseven:run-2.2.0     # gleiche Version wie die Engine in Quarkus (pom.xml)
+    image: cibseven/cibseven:tomcat-2.2.0  # feste Version = CIB seven in pom.xml (nicht "tomcat-latest")
     container_name: pflege-cibseven-ui
     profiles: ["ui"]
-    command: ["./cibseven.sh", "--webapps", "--rest"]
+    command: ["bash", "/pflege/start.sh"]
+    volumes:
+      - ./docker/cibseven-ui/start.sh:/pflege/start.sh:ro
     environment:
       DB_DRIVER: com.mysql.cj.jdbc.Driver
       DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?sendFractionalSeconds=false
       DB_USERNAME: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
-      SPRING_DATASOURCE_HIKARI_TRANSACTION_ISOLATION: TRANSACTION_READ_COMMITTED  # verlangt die Engine
-      CAMUNDA_BPM_JOBEXECUTION_ENABLED: "false"   # keine Jobs ausfuehren (siehe oben)
-      CAMUNDA_BPM_RUN_EXAMPLE_ENABLED: "false"    # kein Rechnungs-Beispielprozess
-      CAMUNDA_BPM_HISTORYLEVEL: full              # muss zur Quarkus-Engine passen
+      WAIT_FOR: mysql:3306
       AI_AGENT_ENABLED: "false"
     depends_on:
       mysql:
         condition: service_healthy
     ports:
-      - "${CIBSEVEN_UI_PORT:-8090}:8080"
+      # nur lokal erreichbar: die REST-API /engine-rest des Images hat keine Anmeldung
+      - "127.0.0.1:${CIBSEVEN_UI_PORT:-8090}:8080"
 
 volumes:
   mysql-daten:
