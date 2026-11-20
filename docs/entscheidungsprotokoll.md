@@ -24,6 +24,26 @@ alten ersetzt).
 
 ---
 
+### E-007: CIB-seven-Oberfläche als optionaler Container (Tomcat-Distribution)
+
+- **Datum:** 2026-11-17
+- **Entscheidung:** Cockpit, Tasklist und Admin laufen im Container `cibseven/cibseven:tomcat-2.2.0`
+  (Compose-Profil `ui`, Port 8090, nur `127.0.0.1`) auf derselben MySQL-Datenbank wie die
+  Quarkus-Anwendung. Das Startskript `docker/cibseven-ui/start.sh` schaltet den Job-Executor ab
+  (`jobExecutorActivate=false` in `bpm-platform.xml`) und entfernt das Rechnungs-Beispiel.
+- **Begründung:** Die Quarkus-Erweiterung von CIB seven enthält keine Webanwendungen. Die Engine
+  speichert ihren gesamten Zustand in der Datenbank, deshalb kann eine zweite Engine-Instanz ihn
+  anzeigen. Ohne abgeschalteten Job-Executor würde der Container Timer und asynchrone Schritte
+  übernehmen, deren Java-Delegates nur in Quarkus existieren → Vorfälle. Feste Version statt
+  `tomcat-latest`, weil die Engine-Version zu den Tabellen der Quarkus-Engine passen muss (am
+  2026-11-17 waren beide Tags dasselbe Image). Das Rechnungs-Beispiel würde Prozesse, Instanzen und
+  Demo-Benutzer in unsere Datenbank schreiben.
+- **Geprüft (lokal):** Ein Timer-Prozess (1 s) läuft im unveränderten Image weiter, mit dem
+  Startskript bleibt er stehen. Cockpit zeigt Modell und Instanzen des Hello-Prozesses; Quarkus
+  arbeitet parallel weiter. Auf leerer Datenbank legt das Setup-Formular den ersten Admin an.
+- **Betroffene Teams:** alle (nur lokale Entwicklung; CI startet den Container nicht)
+- **Offene Folgen:** Image-Tag bei jedem CIB-seven-Upgrade mitziehen (siehe E-001).
+
 ### E-006: BPMN-Service-Tasks nur über Delegate-Beans
 
 - **Datum:** 2026-11-16
