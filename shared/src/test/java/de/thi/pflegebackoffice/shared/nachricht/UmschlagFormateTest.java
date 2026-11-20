@@ -1,6 +1,6 @@
 /*
  * Pflege-Backoffice MVP – SPDX-License-Identifier: MIT
- * Verantwortlich: <NAME>
+ * Verantwortlich: @Johannes-01
  * Hauptautor: KI-generiert (Claude Code, Anthropic)
  */
 // KI-GENERIERT START (Claude Code, Anthropic)
