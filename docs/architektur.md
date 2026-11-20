@@ -48,15 +48,16 @@ flowchart LR
         keine --> verm["Keine Antwort vermerken"] --> e2((Ende))
     end
 
-    send -- "JSON" --> qa[["JMS-Queue<br/>hello.anfrage"]]
-    send -- "AnfrageGesendet" --> esper{{"Esper-Regel<br/>keine-antwort"}}
+    send -- "JSON, gleiche Transaktion" --> ap[(MySQL<br/>gemeinsam_ausgangspostfach)]
+    ap -- "nach Commit<br/>Camel-Timer" --> qa[["JMS-Queue<br/>hello.anfrage"]]
+    ap -- "NachrichtVersendet →<br/>AnfrageGesendet" --> esper{{"Esper-Regel<br/>keine-antwort"}}
 
     qa --> r1["Camel-Route<br/>hello-anfrage-verteilen<br/>(inhaltsbasiert)"]
     r1 -- "kanal=DATEI<br/>JSON → XML" --> fs[/"Ordner<br/>target/hello/ausgang"/]
     r1 -- "kanal=DATENBANK" --> ta[(MySQL<br/>hello_ausgangsnachricht)]
 
     sim1[/"Ordner<br/>target/hello/backend-eingang"/] --> r2["Camel-Route<br/>hello-backend-simulator-datei<br/>XML → JSON"]
-    client -- "POST /api/v1/hello/backend-antworten" --> qb
+    client -- "POST /api/v1/hello/backend-antworten<br/>(404/409, wenn kein Vorgang wartet)" --> qb
     r2 --> qb[["JMS-Queue<br/>hello.antwort"]]
     qb --> r3["Camel-Route<br/>hello-antwort-korrelieren"]
     r3 -- "correlate (Business Key)" --> antw
@@ -99,4 +100,13 @@ Eine MySQL-Datenbank `pflege_backoffice` (Entscheidung E-004):
   (`docker compose --profile ui up -d`, <http://localhost:8090/camunda/app/>, Tomcat-Distribution), liest dieselbe Datenbank und führt
   selbst keine Jobs aus (Entscheidung E-007).
 - **Fehlerbehandlung JMS:** Antworten ohne wartenden Prozess landen in `hello.antwort.fehler`.
+  Der REST-Simulator `POST /api/v1/hello/backend-antworten` prüft vorab und antwortet sofort mit
+  `404` (Vorgang unbekannt) bzw. `409` (Vorgang wartet nicht mehr).
+- **Nachrichten aus Prozessen versenden: immer über das Ausgangspostfach** (`shared`, Paket
+  `ausgangspostfach`, Entscheidung E-008). `Ausgangspostfach.ablegen(ziel, umschlag)` schreibt die
+  Nachricht in derselben Transaktion wie Prozesszustand und Fachdaten in die Tabelle
+  `gemeinsam_ausgangspostfach`; ein Camel-Timer versendet sie erst nach dem Commit. Wer reagieren
+  will, sobald eine Nachricht wirklich raus ist, beobachtet das CDI-Ereignis `NachrichtVersendet`.
+  Zustellung „mindestens einmal“: Empfänger müssen Duplikate (gleiche Vorgangskennung) vertragen.
+  Einstellungen: `ausgangspostfach.*` in `application.properties`.
 <!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

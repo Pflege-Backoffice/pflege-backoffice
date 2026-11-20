@@ -214,7 +214,10 @@ docker compose up -d     # Tests brauchen MySQL und ActiveMQ
 
 - `shared`: Unit-Test der JSON ↔ XML-Umwandlung (ohne Infrastruktur).
 - `app`: Ende-zu-Ende-Tests des Hello-Prozesses (`HelloProzessTest`): beide Routing-Ziele,
-  Backend per REST und per XML-Datei, Esper-Zeitüberschreitung (im Test 3 s), Fehlerformat.
+  Backend per REST und per XML-Datei, Esper-Zeitüberschreitung (im Test 3 s), Fehlerformat,
+  404/409 bei Antworten ohne wartenden Vorgang.
+- `app`: `AusgangspostfachTest` – Versand erst nach Commit, nichts bei Rollback, Wiederholung
+  und Aufgeben nach `max-versuche`.
 - GitHub Actions führt `./mvnw verify` mit JDK 17 bei jedem Push und Pull Request aus
   ([.github/workflows/build.yml](.github/workflows/build.yml)).
 
@@ -223,7 +226,8 @@ docker compose up -d     # Tests brauchen MySQL und ActiveMQ
 ```
 pflege-backoffice/
 ├── pom.xml                 Eltern-POM: Versionen (BOMs), Java 17, Modulliste
-├── shared/                 Gemeinsam: Umschlag (Nachrichtenformat), JSON/XML, RFC-9457-Fehler
+├── shared/                 Gemeinsam: Umschlag (Nachrichtenformat), JSON/XML, RFC-9457-Fehler,
+│                           Ausgangspostfach (Nachrichten erst nach dem Commit versenden)
 ├── cep-esper/              Kapselung der Esper-Engine (nur hier com.espertech-Klassen!)
 ├── hello-process/          Beispielprozess = Vorlage für die Teams
 │   ├── api/                REST-Ressource und DTOs
@@ -356,7 +360,8 @@ Einfaches Modell (GitHub Flow):
 | `Cannot connect to the Docker daemon` | Docker Desktop starten. |
 | `./mvnw: Permission denied` (macOS/Linux) | `chmod +x mvnw` |
 | `bad interpreter: /bin/sh^M` | Zeilenenden wurden zu CRLF – mit `git config core.autocrlf false` neu auschecken; `.gitattributes` sorgt danach für LF. |
-| Status bleibt `WARTET_AUF_ANTWORT` | Stimmt die `vorgangskennung` der Antwort? Antworten ohne wartenden Prozess landen in der Queue `hello.antwort.fehler` (ActiveMQ-Konsole). |
+| Status bleibt `WARTET_AUF_ANTWORT` | Stimmt die `vorgangskennung` der Antwort? Der REST-Simulator meldet das sofort (`404`/`409`); Antworten per Datei ohne wartenden Prozess landen in der Queue `hello.antwort.fehler` (ActiveMQ-Konsole). |
+| Anfrage kommt nicht beim Backend an | Tabelle `gemeinsam_ausgangspostfach` ansehen: `gesendetAm` leer und `fehlversuche` > 0 → Spalte `letzterFehler` und Log (`AusgangspostfachVersand`) prüfen, meist ist ActiveMQ nicht erreichbar. |
 | CIB-seven-Oberfläche zeigt Prozess nicht | Die Quarkus-Anwendung muss das Modell einmal deployt haben (`./mvnw quarkus:dev` starten). Cockpit lädt Listen nicht automatisch neu – Seite aktualisieren. |
 | Prozessänderung wird nicht übernommen | Nach Änderungen an `.bpmn`-Dateien Quarkus neu starten (`s` im Dev-Modus-Terminal). |
 
