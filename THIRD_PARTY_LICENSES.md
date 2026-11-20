@@ -18,7 +18,7 @@ Erzeugt aus den Maven-POMs (vollständige Liste unten), Sonderfälle zusätzlich
 
 | Lizenz | Anzahl | Beispiele | Verträglich mit MIT (auch kommerziell)? |
 |---|---|---|---|
-| Apache License 2.0 | 223 | Quarkus, CIB seven, Apache Camel, ActiveMQ-Client, Hibernate ORM 7, Narayana, Jackson, pooled-jms | ✅ ja |
+| Apache License 2.0 | 225 | Quarkus, CIB seven, Apache Camel, ActiveMQ-Client, Hibernate ORM 7, Narayana, Jackson, pooled-jms | ✅ ja |
 | MIT / MIT-0 | 2 | SLF4J, reactive-streams | ✅ ja |
 | BSD-2-Clause / BSD-3-Clause | 5 | ANTLR 4 Runtime, Janino, Stax2 API, CRaC | ✅ ja |
 | Public Domain | 1 | JBoss Transaction SPI | ✅ ja |
@@ -250,6 +250,7 @@ Lists of 259 third-party dependencies.
 (Apache-2.0) Camel :: Management API (org.apache.camel:camel-management-api:4.14.8 - https://www.apache.org/camel/camel-parent/core/camel-management-api/)
 (Apache-2.0) Camel :: MicroProfile :: Config (org.apache.camel:camel-microprofile-config:4.14.8 - https://www.apache.org/camel/camel-parent/components/camel-microprofile-parent/camel-microprofile-config/)
 (Apache-2.0) Camel :: Support (org.apache.camel:camel-support:4.14.8 - https://www.apache.org/camel/camel-parent/core/camel-support/)
+(Apache-2.0) Camel :: Timer (org.apache.camel:camel-timer:4.14.8 - https://www.apache.org/camel/camel-parent/components/camel-timer/)
 (Apache-2.0) Camel :: Tooling :: Model (org.apache.camel:camel-tooling-model:4.14.8 - https://www.apache.org/camel/camel-parent/tooling/camel-tooling-model/)
 (Apache-2.0) Camel :: Util (org.apache.camel:camel-util:4.14.8 - https://www.apache.org/camel/camel-parent/core/camel-util/)
 (Apache-2.0) Camel :: Util :: JSon (org.apache.camel:camel-util-json:4.14.8 - https://www.apache.org/camel/camel-parent/tooling/camel-util-json/)
@@ -267,6 +268,7 @@ Lists of 259 third-party dependencies.
 (Apache-2.0) Camel Quarkus :: Support :: Spring :: Beans (org.apache.camel.quarkus:camel-quarkus-support-spring-beans:3.27.5 - http://camel.apache.org/camel-quarkus-poms/camel-quarkus-build-parent/camel-quarkus-extensions-support/camel-quarkus-support-spring-parent/camel-quarkus-support-spring-shade/camel-quarkus-support-spring-beans)
 (Apache-2.0) Camel Quarkus :: Support :: Spring :: Context (org.apache.camel.quarkus:camel-quarkus-support-spring-context:3.27.5 - http://camel.apache.org/camel-quarkus-poms/camel-quarkus-build-parent/camel-quarkus-extensions-support/camel-quarkus-support-spring-parent/camel-quarkus-support-spring-shade/camel-quarkus-support-spring-context)
 (Apache-2.0) Camel Quarkus :: Support :: Spring :: Core (org.apache.camel.quarkus:camel-quarkus-support-spring-core:3.27.5 - http://camel.apache.org/camel-quarkus-poms/camel-quarkus-build-parent/camel-quarkus-extensions-support/camel-quarkus-support-spring-parent/camel-quarkus-support-spring-shade/camel-quarkus-support-spring-core)
+(Apache-2.0) Camel Quarkus :: Timer :: Runtime (org.apache.camel.quarkus:camel-quarkus-timer:3.27.5 - http://camel.apache.org/camel-quarkus-poms/camel-quarkus-build-parent/camel-quarkus-extensions/camel-quarkus-timer-parent/camel-quarkus-timer)
 (Apache-2.0) Apache Commons Pool (org.apache.commons:commons-pool2:2.12.0 - https://commons.apache.org/proper/commons-pool/)
 (The Apache Software License, Version 2.0) FEEL Scala Engine (org.camunda.feel:feel-engine:1.19.3 - http://www.camunda.org/camunda-bpm-release-parent/feel-engine)
 (The Apache Software License, Version 2.0) CIB seven - engine (org.cibseven.bpm:cibseven-engine:2.2.0 - https://cibseven.org)
