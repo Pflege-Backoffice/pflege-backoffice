@@ -59,6 +59,24 @@ class HelloProzessTest {
                 .body("status", equalTo("ABGESCHLOSSEN"))
                 .body("antwort", equalTo("Antwort per REST"))
                 .body("prozessAktiv", equalTo(false)));
+
+        // Zweite Antwort auf einen abgeschlossenen Vorgang: sofort 409 statt stiller Fehler-Queue
+        given().contentType(ContentType.JSON)
+                .body(umschlag(vk, "{\"text\": \"zu spaet\"}"))
+                .post("/api/v1/hello/backend-antworten")
+                .then().statusCode(409)
+                .contentType("application/problem+json")
+                .body("type", equalTo("urn:pflege-backoffice:problem:konflikt"));
+    }
+
+    @Test
+    void backendAntwortFuerUnbekanntenVorgang_liefert404() {
+        given().contentType(ContentType.JSON)
+                .body(umschlag("GIBT-ES-NICHT", "{\"text\": \"an niemanden\"}"))
+                .post("/api/v1/hello/backend-antworten")
+                .then().statusCode(404)
+                .contentType("application/problem+json")
+                .body("type", equalTo("urn:pflege-backoffice:problem:nicht-gefunden"));
     }
 
     @Test

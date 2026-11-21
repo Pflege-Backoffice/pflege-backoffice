@@ -36,6 +36,15 @@
             <groupId>org.apache.camel.quarkus</groupId>
             <artifactId>camel-quarkus-jacksonxml</artifactId>
         </dependency>
+        <!-- Ausgangspostfach (Transactional Outbox): Tabelle + Camel-Timer, der versendet -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-timer</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

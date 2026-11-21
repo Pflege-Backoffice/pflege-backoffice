@@ -56,14 +56,14 @@ auf den Eintrag im `entscheidungsprotokoll.md` abhaken, nicht löschen.
 
 ## OP-005: Technische Einschränkungen des Hello-Beispiels
 
-- **Wettlauf beim Senden:** Die Sendeaufgabe legt die JMS-Nachricht noch innerhalb der
-  Start-Transaktion auf die Queue. Antwortet ein Backend extrem schnell (bevor der Prozess am
-  Ereignis-Gateway gespeichert ist), schlägt die Korrelation fehl und die Antwort landet in
-  `hello.antwort.fehler`. Für echte Prozesse: Sendeaufgabe mit `camunda:asyncAfter` o. Ä. absichern
-  oder Nachricht erst nach dem Commit senden.
+- ~~**Wettlauf beim Senden**~~ – **erledigt durch E-008 (Ausgangspostfach):** Die Sendeaufgabe
+  legte die JMS-Nachricht früher noch innerhalb der Start-Transaktion auf die Queue; eine sehr
+  schnelle Antwort fand dann keinen wartenden Prozess, und bei einem Rollback war eine Nachricht
+  ohne Vorgang unterwegs. Jetzt wird erst nach dem Commit versendet.
 - **Esper-Zustand nur im Speicher:** Nach einem Neustart vergisst Esper laufende Zeitfenster; diese
   Prozesse warten dann ohne Zeitüberwachung. Für echte Fristen eher BPMN-Timer verwenden und Esper
-  für Muster über mehrere Ereignisse.
+  für Muster über mehrere Ereignisse. (Noch nicht versendete Einträge im Ausgangspostfach sind davon
+  nicht betroffen: Ihr Zeitfenster startet erst beim Versand nach dem Neustart.)
 - **ActiveMQ-Client:** Camel Quarkus 3.27 bringt den Client `activemq-client-jakarta` 5.19.x mit;
   der Broker im Container ist 6.2.0. Beide sprechen OpenWire und funktionieren zusammen (getestet).
 <!-- KI-GENERIERT ENDE (Claude Code, Anthropic) -->

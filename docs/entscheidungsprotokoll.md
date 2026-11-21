@@ -24,6 +24,24 @@ alten ersetzt).
 
 ---
 
+### E-008: Ausgehende Nachrichten über ein Ausgangspostfach (Transactional Outbox)
+
+- **Datum:** 2026-11-20
+- **Entscheidung:** Prozesse und Fachlogik senden JMS-Nachrichten nicht direkt, sondern legen sie mit
+  `Ausgangspostfach.ablegen(...)` (Modul `shared`) in der Tabelle `gemeinsam_ausgangspostfach` ab –
+  in derselben Transaktion wie Prozesszustand und Fachdaten. Ein Camel-Timer versendet committete
+  Einträge in Ablage-Reihenfolge (`FOR UPDATE SKIP LOCKED`), wiederholt Fehlschläge und gibt nach
+  `ausgangspostfach.max-versuche` auf (ERROR im Log, Spalte `letzterFehler`).
+- **Begründung:** Direktes Senden innerhalb der Transaktion führte zu zwei Fehlern: Eine schnelle
+  Antwort fand noch keinen wartenden Prozess, und nach einem Rollback war eine Nachricht ohne Vorgang
+  unterwegs. Verworfen: Senden in einem After-Commit-Callback (Nachricht geht bei Absturz zwischen
+  Commit und Senden verloren), XA-Transaktionen über Datenbank und Broker (aufwendig, im Kurs nicht
+  erprobt), nur Wiederholen der Korrelation (behebt den Rollback-Fall nicht). Liegt in `shared`,
+  damit alle Teams dieselbe Umsetzung nutzen statt sie zu kopieren.
+- **Betroffene Teams:** alle
+- **Offene Folgen:** Zustellung „mindestens einmal“ – Empfänger müssen Duplikate vertragen. Versendete
+  Einträge bleiben zur Nachverfolgung in der Tabelle; bei Bedarf später eine Aufräumregel ergänzen.
+
 ### E-007: CIB-seven-Oberfläche als optionaler Container (Tomcat-Distribution)
 
 - **Datum:** 2026-11-17

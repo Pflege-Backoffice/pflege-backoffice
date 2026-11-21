@@ -75,10 +75,16 @@ public class HelloRessource {
     @Path("/backend-antworten")
     @Operation(summary = "Backend simulieren: Antwort auf die JMS-Queue hello.antwort legen",
             description = "Ersatz fuer ein echtes Backend-System, z. B. aus Postman. "
-                    + "Die Camel-Route korreliert die Antwort anschliessend mit dem wartenden Prozess.")
+                    + "Die Camel-Route korreliert die Antwort anschliessend mit dem wartenden Prozess. "
+                    + "Vorher wird geprueft, ob der Vorgang existiert und noch auf eine Antwort wartet.")
     @APIResponse(responseCode = "202", description = "Nachricht auf die Queue gelegt")
+    @APIResponse(responseCode = "404", description = "Vorgang unbekannt",
+            content = @Content(mediaType = ProblemDetails.MEDIENTYP, schema = @Schema(implementation = ProblemDetails.class)))
+    @APIResponse(responseCode = "409", description = "Vorgang wartet auf keine Antwort (mehr)",
+            content = @Content(mediaType = ProblemDetails.MEDIENTYP, schema = @Schema(implementation = ProblemDetails.class)))
     public Response backendAntwortSimulieren(@Valid @NotNull Umschlag<BackendAntwortDaten> antwort)
             throws JsonProcessingException {
+        dienst.pruefeWartetAufAntwort(antwort.vorgangskennung());
         camel.sendBody(HelloKonstanten.QUEUE_ANTWORT, UmschlagFormate.JSON_MAPPER.writeValueAsString(antwort));
         return Response.accepted().build();
     }

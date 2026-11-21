@@ -74,6 +74,23 @@ public class HelloVorgangDienst {
                 vorgang.antwort, instanz != null, aktiveSchritte);
     }
 
+    /**
+     * Prueft vor dem Einreihen einer Backend-Antwort, ob sie ueberhaupt zugeordnet werden kann:
+     * 404, wenn der Vorgang unbekannt ist; 409, wenn er nicht (mehr) auf eine Antwort wartet.
+     * <p>
+     * Das ist eine Vorabpruefung fuer schnelle Rueckmeldung. Die eigentliche Zuordnung passiert
+     * danach asynchron; laeuft der Vorgang genau dazwischen ab, landet die Antwort weiterhin in
+     * hello.antwort.fehler.
+     */
+    public void pruefeWartetAufAntwort(String vorgangskennung) {
+        HelloVorgang vorgang = HelloVorgang.findeMitKennung(vorgangskennung)
+                .orElseThrow(() -> FachlicherFehler.nichtGefunden("Vorgang " + vorgangskennung + " existiert nicht."));
+        if (vorgang.status != HelloStatus.WARTET_AUF_ANTWORT) {
+            throw FachlicherFehler.konflikt("Vorgang " + vorgangskennung + " wartet auf keine Antwort mehr (Status "
+                    + vorgang.status + ").");
+        }
+    }
+
     @Transactional
     public void abschliessen(String vorgangskennung, String antwort) {
         HelloVorgang vorgang = HelloVorgang.findeMitKennung(vorgangskennung).orElseThrow();

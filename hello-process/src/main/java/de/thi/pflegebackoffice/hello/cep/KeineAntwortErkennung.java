@@ -8,6 +8,7 @@ package de.thi.pflegebackoffice.hello.cep;
 
 import de.thi.pflegebackoffice.cep.EsperDienst;
 import de.thi.pflegebackoffice.hello.HelloKonstanten;
+import de.thi.pflegebackoffice.shared.ausgangspostfach.NachrichtVersendet;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -55,6 +56,16 @@ public class KeineAntwortErkennung {
 
     void beimStart(@Observes StartupEvent ereignis) {
         esper.regelInstallieren(EPL.formatted(timeoutSekunden), "keine-antwort", this::keineAntwort);
+    }
+
+    /**
+     * Zeitfenster starten, sobald die Anfrage das System WIRKLICH verlassen hat
+     * (Ausgangspostfach, also nach dem Commit) – nicht schon beim Ablegen.
+     */
+    void beiVersand(@Observes NachrichtVersendet ereignis) {
+        if (HelloKonstanten.QUEUE_ANFRAGE.equals(ereignis.ziel())) {
+            anfrageGesendet(ereignis.vorgangskennung());
+        }
     }
 
     public void anfrageGesendet(String vorgangskennung) {
